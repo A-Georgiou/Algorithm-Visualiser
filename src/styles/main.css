@@ -1,0 +1,15 @@
+.array-bar-container{
+    height: 500px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.sorting-content-container{
+    width: 100%;
+    margin: 1em;
+}
+
+.sorting-content-container > button {
+    margin: 1em;
+}
