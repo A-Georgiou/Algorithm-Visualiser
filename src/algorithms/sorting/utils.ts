@@ -6,7 +6,7 @@ async function highlightIndices(setSelectedIndices: (arr: { [index: number]: str
     await sleep(sleepTime.value);
 }
 
-async function completeSortedArray(arr: number[], setSelectedIndices: (arr: { [index: number]: string }) => void, sleepTime: SleepTime){
+async function completeSortedArray(arr: number[], setSelectedIndices: (arr: { [index: number]: string }) => void){
     for (let i = 0; i <= arr.length; i++) {
         const indices = {} as { [index: number]: string };
         for (let j = 0; j <= i; j++) {
