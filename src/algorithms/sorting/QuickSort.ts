@@ -49,7 +49,7 @@ async function initialiseQuickSort(arr: number[], setArr: (arr: number[]) => voi
     await quickSort(arr, 0, arr.length - 1, setArr, sleepTime, setSelectedIndices);
     setArr([...arr]);
 
-    completeSortedArray(arr, setSelectedIndices, sleepTime);
+    completeSortedArray(arr, setSelectedIndices);
     setIsRunning(false);
 }
 

@@ -19,7 +19,7 @@ async function BubbleSort(arr: number[], setArr: (arr: number[]) => void, sleepT
         }
     }
 
-    completeSortedArray(arr, setSelectedIndices, sleepTime);
+    completeSortedArray(arr, setSelectedIndices);
     setIsRunning(false);
 }
 
