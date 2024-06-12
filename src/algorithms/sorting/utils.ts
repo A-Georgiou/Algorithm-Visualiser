@@ -6,13 +6,17 @@ async function highlightIndices(setSelectedIndices: (arr: { [index: number]: str
     await sleep(sleepTime.value);
 }
 
-async function completeSortedArray(arr: number[], setSelectedIndices: (arr: { [index: number]: string }) => void){
+async function completeSortedArray(arr: number[], sleepTime: SleepTime, 
+    isRunningRef: React.MutableRefObject<boolean>,
+        setSelectedIndices: (arr: { [index: number]: string },
+        ) => void){
     for (let i = 0; i <= arr.length; i++) {
+        if (!isRunningRef.current) return;
         const indices = {} as { [index: number]: string };
         for (let j = 0; j <= i; j++) {
-            indices[j] = '#0DA0AD';
+            indices[j] = 'green';
         }
-        await highlightIndices(setSelectedIndices, indices, new SleepTime(50));
+        await highlightIndices(setSelectedIndices, indices, sleepTime);
     }
 }
 

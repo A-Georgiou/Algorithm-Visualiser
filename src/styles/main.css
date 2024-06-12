@@ -27,3 +27,11 @@
     transition: border-color 0.25s; 
     margin: 1em;
 }
+
+.range-controllers {
+    display: flex;
+    justify-content: space-evenly;
+    width: 50%;
+    margin: auto;
+    font-weight: bold;
+}
