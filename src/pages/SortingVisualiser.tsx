@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ArrayBar from './ArrayBar';
+import ArrayBar from '../components/ArrayBar.tsx';
 import generateRandomArray from '../utils/generateRandomArray.ts';
 import BubbleSort from '../algorithms/sorting/BubbleSort.ts';
 import InitialiseQuickSort from '../algorithms/sorting/QuickSort.ts';
@@ -7,7 +7,7 @@ import MergeSort from '../algorithms/sorting/MergeSort.ts';
 import InsertionSort from '../algorithms/sorting/InsertionSort.ts';
 import '../styles/main.css';
 import { SleepTime } from '../algorithms/utils/SleepTime.ts';
-import AlgorithmSelector  from './AlgorithmSelector.tsx';
+import AlgorithmSelector  from '../components/AlgorithmSelector.tsx';
 
 const SortingVisualiser: React.FC = () => {
     const [array, setArray] = useState<number[]>([]);
