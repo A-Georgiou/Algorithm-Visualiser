@@ -1,24 +1,5 @@
 import React from 'react';
 
-interface Node {
-    id: string;
-    label: string;
-}
-
-interface Edge {
-    source: string;
-    target: string;
-}
-
-interface Graph {
-    nodes: Node[];
-    edges: Edge[];
-}
-
-interface GraphVisualiserProps {
-    graph: Graph;
-}
-
 const GraphVisualiser: React.FC = () => {
 
     let graph = {
