@@ -1,0 +1,12 @@
+
+.pathfinding-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: 0;
+}
+
+.pathfinding-col {
+    display: flex;
+    flex-direction: column;
+}

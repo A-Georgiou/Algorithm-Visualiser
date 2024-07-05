@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import "../styles/search.css";
 import { sleep } from '../algorithms/utils/SleepTime.ts';
+import { binarySearch } from '../algorithms/search/BinarySearch.ts';
+import { linearSearch } from '../algorithms/search/LinearSearch.ts';
 
 const SearchVisualiser: React.FC = () => {
     const [array, setArray] = useState<number[]>([]);
@@ -28,50 +30,6 @@ const SearchVisualiser: React.FC = () => {
         setArray((prevArray) => prevArray.sort((a, b) => a - b));
         setBinarySearch(true);
     };
-    // Function to perform binary search
-    const binarySearch = async () => {
-        if (!target) return;
-        let left = 0;
-        let right = array.length - 1;
-        let steps = 0;
-        while (left <= right) {
-            const mid = Math.floor((left + right) / 2);
-            setSelectedIndex(mid);
-            steps += 1;
-            await sleep(500);
-            if (array[mid] === target) {
-                setFoundIndex(mid);
-                setNumSteps(steps);
-                return;
-            } else if (array[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-        setNumSteps(0);
-        setSelectedIndex(null);
-        setFoundIndex(null);
-    };
-
-    // Function to perform linear search
-    const linearSearch = async () => {
-        if (!target) return;
-        let steps = 0;
-        for (let i = 0; i < array.length; i++) {
-            setSelectedIndex(i);
-            await sleep(500);
-            steps += 1;
-            if (array[i] === target) {
-                setNumSteps(steps);
-                setFoundIndex(i);
-                return;
-            }
-        }
-        setNumSteps(0);
-        setSelectedIndex(null);
-        setFoundIndex(null);
-    };
 
     return (
         <div className="search-container">
@@ -93,8 +51,8 @@ const SearchVisualiser: React.FC = () => {
                         onChange={(e) => setTarget(Number(e.target.value))}
                     />
                     <div className="search-button-container">
-                        <button onClick={binarySearch} disabled={!isBinarySearch} style={{ backgroundColor: !isBinarySearch ? 'grey' : ''}}className="search-buttons">Binary Search</button>
-                        <button onClick={linearSearch} className="search-buttons">Linear Search</button>
+                        <button onClick={() => binarySearch(target, array, setNumSteps, setFoundIndex, setSelectedIndex)} disabled={!isBinarySearch} style={{ backgroundColor: !isBinarySearch ? 'grey' : ''}}className="search-buttons">Binary Search</button>
+                        <button onClick={() => linearSearch(target, array, setNumSteps, setFoundIndex, setSelectedIndex)} className="search-buttons">Linear Search</button>
                     </div>
                     {foundIndex !== null ? (
                         <h3>Target found at index: {foundIndex}</h3>
