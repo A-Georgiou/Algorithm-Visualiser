@@ -1,22 +1,21 @@
 import { Cell } from "../utils/PathfindingUtils";
 
 // Define a function to perform breadth-first search on the maze
-function BreadthFirstSearch(maze: Cell[][], startRow: number, startCol: number, endRow: number, endCol: number): Cell[][] | null {
+export function BreadthFirstSearch(maze: Cell[][], startCell: Cell, endCell: Cell): boolean[][] | null {
     const queue: Cell[] = [];
-    const visited: Cell[][] = [];
+    const visited: boolean[][] = [];
 
     // Initialize the visited array
     for (let row = 0; row < maze.length; row++) {
         visited[row] = [];
         for (let col = 0; col < maze[row].length; col++) {
-            visited[row][col] = new Cell(row, col);
-            visited[row][col].wall = maze[row][col].wall;
+            visited[row][col] = true;
         }
     }
 
     // Add the start cell to the queue
-    queue.push(maze[startRow][startCol]);
-    visited[startRow][startCol].visited = true;
+    queue.push(startCell);
+    visited[startCell.row][startCell.col] = true;
 
     // Perform breadth-first search
     while (queue.length > 0) {
@@ -27,7 +26,7 @@ function BreadthFirstSearch(maze: Cell[][], startRow: number, startCol: number, 
         }
 
         // Check if we have reached the end cell
-        if (currentCell.row === endRow && currentCell.col === endCol) {
+        if (currentCell.row === endCell.row && currentCell.col === endCell.col) {
             return visited;
         }
 
@@ -36,9 +35,9 @@ function BreadthFirstSearch(maze: Cell[][], startRow: number, startCol: number, 
 
         // Visit each neighbor
         for (const neighbor of neighbors) {
-            if (!visited[neighbor.row][neighbor.col].visited) {
+            if (!visited[neighbor.row][neighbor.col]) {
                 queue.push(neighbor);
-                visited[neighbor.row][neighbor.col].visited = true;
+                visited[neighbor.row][neighbor.col] = true;
             }
         }
     }

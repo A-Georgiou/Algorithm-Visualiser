@@ -3,6 +3,7 @@ import useWindowDimensions from '../utils/useWindowDimensions';
 import '../styles/pathfinding.css';
 import { HiChevronRight } from "react-icons/hi";
 import { Cell } from '../algorithms/utils/PathfindingUtils';
+import { BreadthFirstSearch } from '../algorithms/pathfinding/BreadthFirstSearch.ts';
 
 const PathfindingVisualiser: React.FC = () => {
     const { width = 0, height = 0 } = useWindowDimensions();
@@ -109,30 +110,38 @@ const PathfindingVisualiser: React.FC = () => {
         });
     };
 
+    function triggerBFS(){
+        let visited = BreadthFirstSearch(maze, maze[startNode[0]][startNode[1]], maze[endNode[0]][endNode[1]]);
+        console.log(visited);
+    }
+
     return (
-        <div onMouseUp={handleMouseUp}>
-            {maze.map((row, rowIndex) => (
-                <div key={rowIndex} className="pathfinding-row" id={'row-' + rowIndex}>
-                    {row.map((cell, colIndex) => (
-                        <div
-                            key={colIndex}
-                            onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
-                            onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
-                            style={{
-                                width: '26px',
-                                height: '26px',
-                                backgroundColor: cell.start ? 'lightblue' : ( cell.end ? 'lightgreen' :  (cell.wall ? 'black' : 'white')),
-                                border: '.5px solid lightblue',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}>
-                            {cell.start ? <HiChevronRight style={{color: 'black', fontSize: '26px'}} /> : ''}
-                            {cell.end ? <HiChevronRight style={{color: 'black', fontSize: '26px', transform: 'rotate(180deg)'}} /> : ''}
-                        </div>
-                    ))}
-                </div>
-            ))}
+        <div>
+            <div onMouseUp={handleMouseUp}>
+                {maze.map((row, rowIndex) => (
+                    <div key={rowIndex} className="pathfinding-row" id={'row-' + rowIndex}>
+                        {row.map((cell, colIndex) => (
+                            <div
+                                key={colIndex}
+                                onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
+                                onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
+                                style={{
+                                    width: '26px',
+                                    height: '26px',
+                                    backgroundColor: cell.start ? 'lightblue' : ( cell.end ? 'lightgreen' :  ( cell.visited ? 'orange' : (cell.wall ? 'black' : 'white'))),
+                                    border: '.5px solid lightblue',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}>
+                                {cell.start ? <HiChevronRight style={{color: 'black', fontSize: '26px'}} /> : ''}
+                                {cell.end ? <HiChevronRight style={{color: 'black', fontSize: '26px', transform: 'rotate(180deg)'}} /> : ''}
+                            </div>
+                        ))}
+                    </div>
+                ))}
+            </div>
+            <button onClick={() => triggerBFS()}></button>
         </div>
     );
 };
