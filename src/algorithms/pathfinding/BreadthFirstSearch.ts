@@ -1,7 +1,8 @@
-import { Cell } from "../utils/PathfindingUtils";
+import { Cell, getNeighbors, getOptimalPath } from "../utils/PathfindingUtils";
+import { sleep } from '../utils/SleepTime';
 
 // Define a function to perform breadth-first search on the maze
-export function BreadthFirstSearch(maze: Cell[][], startCell: Cell, endCell: Cell): boolean[][] | null {
+export async function BreadthFirstSearch(maze: Cell[][], startCell: Cell, endCell: Cell, setMaze: (arr: Cell[][]) => void ): Promise<Cell[] | null> {
     const queue: Cell[] = [];
     const visited: boolean[][] = [];
 
@@ -9,25 +10,24 @@ export function BreadthFirstSearch(maze: Cell[][], startCell: Cell, endCell: Cel
     for (let row = 0; row < maze.length; row++) {
         visited[row] = [];
         for (let col = 0; col < maze[row].length; col++) {
-            visited[row][col] = true;
+            visited[row][col] = false;
         }
     }
 
     // Add the start cell to the queue
     queue.push(startCell);
     visited[startCell.row][startCell.col] = true;
+    maze[startCell.row][startCell.col].visited = true;
 
     // Perform breadth-first search
     while (queue.length > 0) {
         const currentCell = queue.shift();
-
         if (!currentCell) {
             continue;
         }
-
         // Check if we have reached the end cell
         if (currentCell.row === endCell.row && currentCell.col === endCell.col) {
-            return visited;
+            return getOptimalPath(maze, startCell, endCell);
         }
 
         // Get the neighbors of the current cell
@@ -38,38 +38,14 @@ export function BreadthFirstSearch(maze: Cell[][], startCell: Cell, endCell: Cel
             if (!visited[neighbor.row][neighbor.col]) {
                 queue.push(neighbor);
                 visited[neighbor.row][neighbor.col] = true;
+                maze[neighbor.row][neighbor.col].visited = true;
+                maze[neighbor.row][neighbor.col].prev = currentCell;
             }
         }
+        await sleep(10);
+        setMaze([...maze]);
     }
 
     // If we reach here, there is no path from start to end
     return null;
-}
-
-// Define a function to get the neighbors of a cell
-function getNeighbors(maze: Cell[][], cell: Cell): Cell[] {
-    const neighbors: Cell[] = [];
-    const { row, col } = cell;
-
-    // Check the top neighbor
-    if (row > 0 && !maze[row - 1][col].wall) {
-        neighbors.push(maze[row - 1][col]);
-    }
-
-    // Check the right neighbor
-    if (col < maze[row].length - 1 && !maze[row][col + 1].wall) {
-        neighbors.push(maze[row][col + 1]);
-    }
-
-    // Check the bottom neighbor
-    if (row < maze.length - 1 && !maze[row + 1][col].wall) {
-        neighbors.push(maze[row + 1][col]);
-    }
-
-    // Check the left neighbor
-    if (col > 0 && !maze[row][col - 1].wall) {
-        neighbors.push(maze[row][col - 1]);
-    }
-
-    return neighbors;
 }

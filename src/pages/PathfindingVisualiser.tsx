@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import useWindowDimensions from '../utils/useWindowDimensions';
 import '../styles/pathfinding.css';
-import { HiChevronRight } from "react-icons/hi";
+import { HiChevronDoubleRight } from "react-icons/hi2";
+import { HiOutlineFlag } from "react-icons/hi";
 import { Cell } from '../algorithms/utils/PathfindingUtils';
 import { BreadthFirstSearch } from '../algorithms/pathfinding/BreadthFirstSearch.ts';
+import { Dijkstra } from '../algorithms/pathfinding/Dijkstra.ts';
+import { DepthFirstSearch } from '../algorithms/pathfinding/DepthFirstSearch.ts';
+import { sleep } from '../algorithms/utils/SleepTime';
+import { primsMazeGeneration } from '../algorithms/mazes/PrimsMazeGeneration.ts';
+import { dfsMazeGeneration } from '../algorithms/mazes/DFSMazeGeneration.ts';
 
 const PathfindingVisualiser: React.FC = () => {
     const { width = 0, height = 0 } = useWindowDimensions();
@@ -13,10 +19,50 @@ const PathfindingVisualiser: React.FC = () => {
     const [startNode, setStartNode] = useState<number[]>([0, 0]);
     const [endNode, setEndNode] = useState<number[]>([0, 0]);
     const [isMovingNode, setIsMovingNode] = useState<'start' | 'end' | null>(null);
+    const [runDijkstra, setRunDijkstra] = useState<boolean>(false);
+    const [runBFS, setRunBFS] = useState<boolean>(false);
+    const [runDFS, setRunDFS] = useState<boolean>(false);
+    const [generatePrimsMaze, setGeneratePrimsMaze] = useState<boolean>(false);
+    const [generateDFSMaze, setGenerateDFSMaze] = useState<boolean>(false);
 
     useEffect(() => {
         generateTable();
     }, [width, height]);
+
+    useEffect(() => {
+        if (runDijkstra) {
+            callDijkstra();
+            setRunDijkstra(false);
+        }
+    }, [runDijkstra]);
+
+    useEffect(() => {
+        if (runBFS) {
+            callBFS();
+            setRunBFS(false);
+        }
+    }, [runBFS]);
+
+    useEffect(() => {
+        if (runDFS) {
+            callDFS();
+            setRunDFS(false);
+        }
+    }, [runDFS]);
+
+    useEffect(() => {
+        if (generatePrimsMaze) {
+            primsMazeRun();
+            setGeneratePrimsMaze(false);
+        }
+    }, [generatePrimsMaze]);
+
+    useEffect(() => {
+        if (generateDFSMaze) {
+            DFSMazeRun();
+            setGenerateDFSMaze(false);
+        }
+    }, [generateDFSMaze]);
 
     function setStartPosition(flatHeight: number, flatWidth: number){
         const rowIndex = Math.floor(flatHeight / 2);
@@ -43,8 +89,11 @@ const PathfindingVisualiser: React.FC = () => {
     }
 
     function generateTable() {
-        const flatHeight = Math.floor(height / 27);
-        const flatWidth = Math.floor((width - 300) / 27);
+        let flatHeight = Math.floor((height - 26) / 26);
+        if (flatHeight % 2 === 0) flatHeight += 1; 
+        let flatWidth = Math.floor((width - 326) / 26);
+        if (flatWidth % 2 === 0) flatWidth += 1; 
+
         const newMaze = [];
         for (let i = 0; i < flatHeight; i++) {
             const row = [];
@@ -110,9 +159,101 @@ const PathfindingVisualiser: React.FC = () => {
         });
     };
 
+    function clearAttribute(attribute: keyof Cell) {
+        if (maze.length === 0 || maze[0].length === 0) {
+            console.error(`Maze is empty or not initialized.`);
+            return;
+        }
+    
+        const sampleCell = maze[0][0];
+        const validAttributes = Object.keys(sampleCell);
+    
+        if (!validAttributes.includes(attribute)) {
+            console.error(`Invalid attribute: ${attribute}`);
+            return;
+        }
+    
+        setMaze(prevMaze => prevMaze.map(row =>
+            row.map(cell => ({ ...cell, [attribute]: false }))
+        ));
+    };
+
+    async function populateOptimalPath(optimalPath: Cell[] | null) {
+        if (!optimalPath) {
+            return;
+        }
+    
+        const delay = 50; // Delay in milliseconds between each update
+    
+        const updateCell = (index: number) => {
+            if (index >= optimalPath.length) {
+                return;
+            }
+    
+            setMaze(prevMaze => {
+                const newMaze = prevMaze.map(row => row.map(cell => ({ ...cell })));
+                newMaze[optimalPath[index].row][optimalPath[index].col].finalPath = true;
+                return newMaze;
+            });
+    
+            // Schedule the next update with delay
+            requestAnimationFrame(() => setTimeout(() => updateCell(index + 1), delay));
+        };
+    
+        updateCell(0);
+    }
+
+    async function callBFS(){
+        const optimalPath = await BreadthFirstSearch(maze, maze[startNode[0]][startNode[1]], maze[endNode[0]][endNode[1]], setMaze);
+        await populateOptimalPath(optimalPath);
+    }
+
+    async function callDijkstra(){
+        const optimalPath = await Dijkstra(maze, maze[startNode[0]][startNode[1]], maze[endNode[0]][endNode[1]], setMaze);
+        await populateOptimalPath(optimalPath);
+    }
+
+    async function callDFS(){
+        const optimalPath = await DepthFirstSearch(maze, maze[startNode[0]][startNode[1]], maze[endNode[0]][endNode[1]], setMaze);
+        await populateOptimalPath(optimalPath);
+    }
+
     function triggerBFS(){
-        let visited = BreadthFirstSearch(maze, maze[startNode[0]][startNode[1]], maze[endNode[0]][endNode[1]]);
-        console.log(visited);
+        clearAttribute('visited');
+        clearAttribute('finalPath');
+        setRunBFS(true);
+    }
+
+    function triggerDijkstra(){
+        clearAttribute('visited');
+        clearAttribute('finalPath');
+        setRunDijkstra(true);
+    }
+
+    function triggerDFS(){
+        clearAttribute('visited');
+        clearAttribute('finalPath');
+        setRunDFS(true);
+    }
+
+    function primsMazeRun(){
+        clearAttribute('visited');
+        clearAttribute('finalPath');
+        setGeneratePrimsMaze(true);
+    }
+
+    function DFSMazeRun(){
+        clearAttribute('visited');
+        clearAttribute('finalPath');
+        setGenerateDFSMaze(true);
+    }
+
+    function triggerPrimsMaze(){      
+        primsMazeGeneration(maze, maze[startNode[0]][startNode[1]], maze[endNode[0]][endNode[1]], setMaze);
+    }
+
+    function triggerDFSMaze(){
+        dfsMazeGeneration(maze, maze[startNode[0]][startNode[1]], maze[endNode[0]][endNode[1]], setMaze);
     }
 
     return (
@@ -126,22 +267,28 @@ const PathfindingVisualiser: React.FC = () => {
                                 onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                                 onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
                                 style={{
-                                    width: '26px',
-                                    height: '26px',
-                                    backgroundColor: cell.start ? 'lightblue' : ( cell.end ? 'lightgreen' :  ( cell.visited ? 'orange' : (cell.wall ? 'black' : 'white'))),
+                                    width: '25px',
+                                    height: '25px',
+                                    backgroundColor: cell.wall  ? 'black' : (cell.finalPath ? 'yellow'  : (cell.visited ? 'lightblue' : 'white')),
                                     border: '.5px solid lightblue',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center'
                                 }}>
-                                {cell.start ? <HiChevronRight style={{color: 'black', fontSize: '26px'}} /> : ''}
-                                {cell.end ? <HiChevronRight style={{color: 'black', fontSize: '26px', transform: 'rotate(180deg)'}} /> : ''}
+                                {cell.start ? <HiChevronDoubleRight style={{color: 'black', fontSize: '26px'}} /> : ''}
+                                {cell.end ? <HiOutlineFlag style={{color: 'black', fontSize: '26px'}} /> : ''}
                             </div>
                         ))}
                     </div>
                 ))}
             </div>
-            <button onClick={() => triggerBFS()}></button>
+            <button onClick={() => {triggerBFS();}} style={{backgroundColor: 'white', color: 'black'}}>Run BFS Visualisation</button>
+            <button onClick={() => {triggerDFS();}} style={{backgroundColor: 'white', color: 'black'}}>Run DFS Visualisation</button>
+            <button onClick={() => {triggerDijkstra();}} style={{backgroundColor: 'white', color: 'black'}}>Run Djikstra Visualisation</button>
+            <button onClick={() => {triggerPrimsMaze();}} style={{backgroundColor: 'white', color: 'black'}}>Generate Prims Maze</button>
+            <button onClick={() => {triggerDFSMaze();}} style={{backgroundColor: 'white', color: 'black'}}>Generate DFS Maze</button>
+            <button onClick={() => generateTable()} style={{backgroundColor: 'white', color: 'black'}}>Reset Board</button>
+            <button onClick={() => {clearAttribute('visited'); clearAttribute('finalPath')}} style={{backgroundColor: 'white', color: 'black'}}>Clear Latest Run</button>
         </div>
     );
 };
