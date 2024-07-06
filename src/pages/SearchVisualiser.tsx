@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import "../styles/search.css";
-import { sleep } from '../algorithms/utils/SleepTime.ts';
 import { binarySearch } from '../algorithms/search/BinarySearch.ts';
 import { linearSearch } from '../algorithms/search/LinearSearch.ts';
 

@@ -7,7 +7,6 @@ import { Cell } from '../algorithms/utils/PathfindingUtils';
 import { BreadthFirstSearch } from '../algorithms/pathfinding/BreadthFirstSearch.ts';
 import { Dijkstra } from '../algorithms/pathfinding/Dijkstra.ts';
 import { DepthFirstSearch } from '../algorithms/pathfinding/DepthFirstSearch.ts';
-import { sleep } from '../algorithms/utils/SleepTime';
 import { primsMazeGeneration } from '../algorithms/mazes/PrimsMazeGeneration.ts';
 import { dfsMazeGeneration } from '../algorithms/mazes/DFSMazeGeneration.ts';
 
