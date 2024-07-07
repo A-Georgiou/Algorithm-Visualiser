@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "/Algorithm-Visualiser/#",
+  "homepage": "https://a-georgiou.github.io/Algorithm-Visualiser/",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
