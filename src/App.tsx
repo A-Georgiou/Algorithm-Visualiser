@@ -6,12 +6,12 @@ import Navbar from './pages/Navbar.tsx';
 import NotFoundPage from './pages/404.tsx';
 import './styles/main.css';
 import './App.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 function App() {
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Navbar />}>
           <Route index element={<SortingVisualiser />} />
@@ -22,7 +22,7 @@ function App() {
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
