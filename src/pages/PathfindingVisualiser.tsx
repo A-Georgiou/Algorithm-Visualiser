@@ -4,6 +4,7 @@ import '../styles/pathfinding.css';
 import { HiChevronDoubleRight } from "react-icons/hi2";
 import { HiOutlineFlag } from "react-icons/hi";
 import { Cell } from '../algorithms/utils/PathfindingUtils';
+import MazeGrid from '../components/MazeGrid.tsx';
 import { BreadthFirstSearch } from '../algorithms/pathfinding/BreadthFirstSearch.ts';
 import { Dijkstra } from '../algorithms/pathfinding/Dijkstra.ts';
 import { DepthFirstSearch } from '../algorithms/pathfinding/DepthFirstSearch.ts';
@@ -180,30 +181,12 @@ const PathfindingVisualiser: React.FC = () => {
 
     return (
         <div>
-            <div onMouseUp={handleMouseUp}>
-                {maze.map((row, rowIndex) => (
-                    <div key={rowIndex} className="pathfinding-row" id={'row-' + rowIndex}>
-                        {row.map((cell, colIndex) => (
-                            <div
-                                key={colIndex}
-                                onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
-                                onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
-                                style={{
-                                    width: '25px',
-                                    height: '25px',
-                                    backgroundColor: cell.wall  ? 'black' : (cell.finalPath ? 'yellow'  : (cell.visited ? 'lightblue' : 'white')),
-                                    border: '.5px solid lightblue',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}>
-                                {cell.start ? <HiChevronDoubleRight style={{color: 'black', fontSize: '26px'}} /> : ''}
-                                {cell.end ? <HiOutlineFlag style={{color: 'black', fontSize: '26px'}} /> : ''}
-                            </div>
-                        ))}
-                    </div>
-                ))}
-            </div>
+            <MazeGrid
+                maze={maze}
+                handleMouseDown={handleMouseDown}
+                handleMouseEnter={handleMouseEnter}
+                handleMouseUp={handleMouseUp}
+            />
             <button onClick={() => {triggerBFS();}} style={{backgroundColor: 'white', color: 'black'}}>Run BFS Visualisation</button>
             <button onClick={() => {triggerDFS();}} style={{backgroundColor: 'white', color: 'black'}}>Run DFS Visualisation</button>
             <button onClick={() => {triggerDijkstra();}} style={{backgroundColor: 'white', color: 'black'}}>Run Djikstra Visualisation</button>
