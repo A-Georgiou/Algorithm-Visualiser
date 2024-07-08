@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import useWindowDimensions from '../utils/useWindowDimensions';
 import '../styles/pathfinding.css';
-import { HiChevronDoubleRight } from "react-icons/hi2";
-import { HiOutlineFlag } from "react-icons/hi";
-import { Cell } from '../algorithms/utils/PathfindingUtils';
 import MazeGrid from '../components/MazeGrid.tsx';
 import mazeHooks from '../utils/mazeHooks.ts';
 import pathfindingAlgorithmHooks from '../utils/pathfindingAlgorithmHooks.ts';
+import ControlPanel from '../components/ControlPanel.tsx';
 
 const PathfindingVisualiser: React.FC = () => {
     const { width = 0, height = 0 } = useWindowDimensions();
@@ -26,7 +24,7 @@ const PathfindingVisualiser: React.FC = () => {
         setStartNode,
         setEndNode,
         generateTable,
-        clearAttribute,
+        clearLatestRun,
         populateOptimalPath,
     } = mazeHooks(width, height);
 
@@ -91,11 +89,6 @@ const PathfindingVisualiser: React.FC = () => {
         });
     };
 
-    function clearLatestRun(){
-        clearAttribute('visited');
-        clearAttribute('finalPath');
-    }
-
     return (
         <div>
             <MazeGrid
@@ -104,13 +97,7 @@ const PathfindingVisualiser: React.FC = () => {
                 handleMouseEnter={handleMouseEnter}
                 handleMouseUp={handleMouseUp}
             />
-            <button onClick={() => triggerAlgorithm('bfs')} style={{backgroundColor: 'white', color: 'black'}}>Run BFS Visualisation</button>
-            <button onClick={() => triggerAlgorithm('dfs')} style={{backgroundColor: 'white', color: 'black'}}>Run DFS Visualisation</button>
-            <button onClick={() => triggerAlgorithm('dijkstra')} style={{backgroundColor: 'white', color: 'black'}}>Run Djikstra Visualisation</button>
-            <button onClick={() => triggerAlgorithm('primsMaze')} style={{backgroundColor: 'white', color: 'black'}}>Generate Prims Maze</button>
-            <button onClick={() => triggerAlgorithm('dfsMaze')} style={{backgroundColor: 'white', color: 'black'}}>Generate DFS Maze</button>
-            <button onClick={() => generateTable()} style={{backgroundColor: 'white', color: 'black'}}>Reset Board</button>
-            <button onClick={() => clearLatestRun()} style={{backgroundColor: 'white', color: 'black'}}>Clear Latest Run</button>
+            <ControlPanel triggerAlgorithm={triggerAlgorithm} generateTable={generateTable} clearLatestRun={clearLatestRun}/>
         </div>
     );
 };

@@ -73,6 +73,11 @@ const mazeHooks = (width: number, height: number) => {
         ));
     };
 
+    function clearLatestRun(){
+        clearAttribute('visited');
+        clearAttribute('finalPath');
+    }
+
     async function populateOptimalPath(optimalPath: Cell[] | null) {
         if (!optimalPath) {
             return;
@@ -106,7 +111,7 @@ const mazeHooks = (width: number, height: number) => {
         setStartNode,
         setEndNode,
         generateTable,
-        clearAttribute,
+        clearLatestRun,
         populateOptimalPath,
     };
 };
