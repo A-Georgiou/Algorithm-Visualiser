@@ -9,14 +9,12 @@ import { Dijkstra } from '../algorithms/pathfinding/Dijkstra.ts';
 import { DepthFirstSearch } from '../algorithms/pathfinding/DepthFirstSearch.ts';
 import { primsMazeGeneration } from '../algorithms/mazes/PrimsMazeGeneration.ts';
 import { dfsMazeGeneration } from '../algorithms/mazes/DFSMazeGeneration.ts';
+import mazeHooks from '../utils/mazeHooks.ts';
 
 const PathfindingVisualiser: React.FC = () => {
     const { width = 0, height = 0 } = useWindowDimensions();
-    const [maze, setMaze] = useState<Cell[][]>([]);
     const [isDrawing, setIsDrawing] = useState<boolean>(false);
     const [drawingValue, setDrawingValue] = useState<boolean>(false);
-    const [startNode, setStartNode] = useState<number[]>([0, 0]);
-    const [endNode, setEndNode] = useState<number[]>([0, 0]);
     const [isMovingNode, setIsMovingNode] = useState<'start' | 'end' | null>(null);
     const [runDijkstra, setRunDijkstra] = useState<boolean>(false);
     const [runBFS, setRunBFS] = useState<boolean>(false);
@@ -63,48 +61,17 @@ const PathfindingVisualiser: React.FC = () => {
         }
     }, [generateDFSMaze]);
 
-    function setStartPosition(flatHeight: number, flatWidth: number){
-        const rowIndex = Math.floor(flatHeight / 2);
-        const colIndex = Math.floor(flatWidth / 4);
-        setMaze(prevMaze => {
-            const newMaze = [...prevMaze];
-            newMaze[rowIndex][colIndex] = new Cell(rowIndex, colIndex);
-            newMaze[rowIndex][colIndex].start = true;
-            return newMaze;
-        });
-        setStartNode([rowIndex, colIndex]);
-    }
-
-    function setEndPosition(flatHeight: number, flatWidth: number){
-        const rowIndex = Math.floor(flatHeight / 2);
-        const colIndex = Math.floor(flatWidth * 3 / 4);
-        setMaze(prevMaze => {
-            const newMaze = [...prevMaze];
-            newMaze[rowIndex][colIndex] = new Cell(rowIndex, colIndex);
-            newMaze[rowIndex][colIndex].end = true;
-            return newMaze;
-        });
-        setEndNode([rowIndex, colIndex]);
-    }
-
-    function generateTable() {
-        let flatHeight = Math.floor((height - 26) / 26);
-        if (flatHeight % 2 === 0) flatHeight += 1; 
-        let flatWidth = Math.floor((width - 326) / 26);
-        if (flatWidth % 2 === 0) flatWidth += 1; 
-
-        const newMaze = [];
-        for (let i = 0; i < flatHeight; i++) {
-            const row = [];
-            for (let j = 0; j < flatWidth; j++) {
-                row.push(new Cell(i, j));
-            }
-            newMaze.push(row);
-        }
-        setMaze(newMaze);
-        setStartPosition(flatHeight, flatWidth);
-        setEndPosition(flatHeight, flatWidth);
-    }
+    const {
+        maze,
+        setMaze,
+        startNode,
+        endNode,
+        setStartNode,
+        setEndNode,
+        generateTable,
+        clearAttribute,
+        populateOptimalPath,
+    } = mazeHooks(width, height);
 
     const handleMouseDown = (rowIndex: number, colIndex: number) => {
         if (maze[rowIndex][colIndex].start) {
@@ -158,50 +125,6 @@ const PathfindingVisualiser: React.FC = () => {
         });
     };
 
-    function clearAttribute(attribute: keyof Cell) {
-        if (maze.length === 0 || maze[0].length === 0) {
-            console.error(`Maze is empty or not initialized.`);
-            return;
-        }
-    
-        const sampleCell = maze[0][0];
-        const validAttributes = Object.keys(sampleCell);
-    
-        if (!validAttributes.includes(attribute)) {
-            console.error(`Invalid attribute: ${attribute}`);
-            return;
-        }
-    
-        setMaze(prevMaze => prevMaze.map(row =>
-            row.map(cell => ({ ...cell, [attribute]: false }))
-        ));
-    };
-
-    async function populateOptimalPath(optimalPath: Cell[] | null) {
-        if (!optimalPath) {
-            return;
-        }
-    
-        const delay = 50; // Delay in milliseconds between each update
-    
-        const updateCell = (index: number) => {
-            if (index >= optimalPath.length) {
-                return;
-            }
-    
-            setMaze(prevMaze => {
-                const newMaze = prevMaze.map(row => row.map(cell => ({ ...cell })));
-                newMaze[optimalPath[index].row][optimalPath[index].col].finalPath = true;
-                return newMaze;
-            });
-    
-            // Schedule the next update with delay
-            requestAnimationFrame(() => setTimeout(() => updateCell(index + 1), delay));
-        };
-    
-        updateCell(0);
-    }
-
     async function callBFS(){
         const optimalPath = await BreadthFirstSearch(maze, maze[startNode[0]][startNode[1]], maze[endNode[0]][endNode[1]], setMaze);
         await populateOptimalPath(optimalPath);
@@ -235,23 +158,23 @@ const PathfindingVisualiser: React.FC = () => {
         setRunDFS(true);
     }
 
-    function primsMazeRun(){
+    function triggerPrimsMaze(){
         clearAttribute('visited');
         clearAttribute('finalPath');
         setGeneratePrimsMaze(true);
     }
 
-    function DFSMazeRun(){
+    function triggerDFSMaze(){
         clearAttribute('visited');
         clearAttribute('finalPath');
         setGenerateDFSMaze(true);
     }
 
-    function triggerPrimsMaze(){      
+    function primsMazeRun(){      
         primsMazeGeneration(maze, maze[startNode[0]][startNode[1]], maze[endNode[0]][endNode[1]], setMaze);
     }
 
-    function triggerDFSMaze(){
+    function DFSMazeRun(){
         dfsMazeGeneration(maze, maze[startNode[0]][startNode[1]], maze[endNode[0]][endNode[1]], setMaze);
     }
 
