@@ -16,7 +16,7 @@ const PathfindingVisualiser: React.FC = () => {
         maze,
         startNode,
         endNode,
-        setMaze, // Make sure setMaze is destructured here
+        setMaze,
         generateMaze,
         setStartPosition,
         setEndPosition,
@@ -38,7 +38,7 @@ const PathfindingVisualiser: React.FC = () => {
         maze,
         startNode,
         endNode,
-        setMaze, // Ensure setMaze is passed here
+        setMaze,
     });
 
     const handleMouseDown = (rowIndex: number, colIndex: number) => {

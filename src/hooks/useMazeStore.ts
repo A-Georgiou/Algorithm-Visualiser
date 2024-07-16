@@ -1,5 +1,5 @@
 // useMazeStore.ts
-import create from 'zustand';
+import { create } from 'zustand';
 import { Cell } from '../algorithms/utils/PathfindingUtils';
 
 interface MazeState {
@@ -21,7 +21,7 @@ interface MazeState {
 export const useMazeStore = create<MazeState>((set) => ({
     maze: [],
     startNode: [0, 0],
-    endNode: [1,1],
+    endNode: [0, 0],
     setMaze: (newMaze) => set({ maze: newMaze }),
     setCell: (row, col, updates) => {
         set((state) => {
@@ -101,7 +101,7 @@ export const useMazeStore = create<MazeState>((set) => ({
     setEndPosition: (flatHeight, flatWidth) => {
         set((state) => {
             const rowIndex = Math.floor(flatHeight / 2);
-            const colIndex = Math.floor(flatWidth * 3 / 4);
+            const colIndex = Math.floor(flatWidth * (3 / 4));
             const newMaze = state.maze.map((row, i) =>
                 i === rowIndex ? row.map((cell, j) => (j === colIndex ? { ...cell, end: true } : cell)) : row
             );
