@@ -15,7 +15,7 @@ The project is built using [React](https://reactjs.org/) and [Vite](https://vite
 3. **Insertion Sort**: This approach inserts each element into an interatively produced sorted array.
 4. **Merge Sort**: A recursive divide-and-conquer algorithm that iteratively merges and sorts larger and larger sub-arrays.
 
-### Search Algorithms (Coming Soon)
+### Search Algorithms
 - **Linear Search**
 - **Binary Search**
 
