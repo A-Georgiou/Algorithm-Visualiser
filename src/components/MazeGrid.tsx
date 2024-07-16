@@ -15,10 +15,11 @@ const MazeGrid: React.FC<MazeGridProps> = ({ handleMouseDown, handleMouseEnter, 
     return (
         <div onMouseUp={handleMouseUp}>
             {maze.map((row, rowIndex) => (
-                <div key={rowIndex} className="pathfinding-row" id={'row-' + rowIndex}>
+                <div key={rowIndex} className="pathfinding-row wrapper" id={'row-' + rowIndex}>
                     {row.map((cell, colIndex) => (
                         <div
                             key={colIndex}
+                            className={cell.visited ? 'animate' : 'pathfinding-cell'}
                             onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                             onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
                             style={{
