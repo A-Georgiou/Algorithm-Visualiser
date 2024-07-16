@@ -43,18 +43,18 @@ const pathfindingAlgorithmHooks = ({
                     if (optimalPath) populateOptimalPath(optimalPath);
                 },
                 [Algorithm.DIJKSTRA]: async () => {
-                    const optimalPath = await Dijkstra(maze, startCell, endCell, setMaze);
+                    const optimalPath = await Dijkstra(startCell, endCell);
                     if (optimalPath) populateOptimalPath(optimalPath);
                 },
                 [Algorithm.DFS]: async () => {
-                    const optimalPath = await DepthFirstSearch(maze, startCell, endCell, setMaze);
+                    const optimalPath = await DepthFirstSearch(startCell, endCell);
                     if (optimalPath) populateOptimalPath(optimalPath);
                 },
                 [Algorithm.PRIMS_MAZE]: () => {
                     primsMazeGeneration(maze, startCell, endCell, setMaze);
                 },
                 [Algorithm.DFS_MAZE]: () => {
-                    dfsMazeGeneration(startCell, endCell);
+                    dfsMazeGeneration(maze, startCell, endCell, setMaze);
                 },
                 [Algorithm.KRUSKAL_MAZE]: () => {
                     kruskalsMazeGeneration(maze, startCell, endCell, setMaze);

@@ -1,9 +1,11 @@
 import { Cell, getOptimalPath } from '../utils/PathfindingUtils';
-import { sleep } from '../utils/SleepTime';
+import { useMazeStore } from '../../hooks/useMazeStore';
 
-export async function DepthFirstSearch(maze: Cell[][], startCell: Cell, endCell: Cell, setMaze: (arr: Cell[][]) => void ): Promise<Cell[] | null> {
+// Define a generator function for depth-first search on the maze
+function* dfsGenerator(maze: Cell[][], startCell: Cell, endCell: Cell): Generator<Cell[][] | Cell[] | null, unknown> {
     const stack: Cell[] = [];
     const visited: boolean[][] = [];
+
     for (let row = 0; row < maze.length; row++) {
         visited[row] = [];
         for (let col = 0; col < maze[row].length; col++) {
@@ -22,7 +24,7 @@ export async function DepthFirstSearch(maze: Cell[][], startCell: Cell, endCell:
         }
 
         currentCell.visited = true;
-        
+
         if (currentCell.row === endCell.row && currentCell.col === endCell.col) {
             return getOptimalPath(maze, startCell, endCell);
         }
@@ -30,19 +32,43 @@ export async function DepthFirstSearch(maze: Cell[][], startCell: Cell, endCell:
         let neighbors = getNeighbors(maze, currentCell);
 
         for (let neighbor of neighbors) {
-            if (neighbor.visited) {
-                continue;
+            if (!visited[neighbor.row][neighbor.col] && !neighbor.visited) {
+                neighbor.prev = currentCell;
+                stack.push(neighbor);
+                visited[neighbor.row][neighbor.col] = true;
+                maze[neighbor.row][neighbor.col].visited = true;
             }
-            neighbor.prev = currentCell;
-            stack.push(neighbor);
         }
-        await sleep(10);
-        setMaze([...maze]);
+        yield maze;
     }
 
-    return null;
+    yield null;
 }
 
+// Define a function to animate the depth-first search
+export async function DepthFirstSearch(startCell: Cell, endCell: Cell): Promise<Cell[] | null> {
+    const { maze, setMaze, populateOptimalPath } = useMazeStore.getState();
+    const generator = dfsGenerator(maze, startCell, endCell);
+
+    return new Promise((resolve) => {
+        function step() {
+            const result = generator.next();
+            if (result.done) {
+                const optimalPath = result.value as Cell[] | null;
+                if (optimalPath) {
+                    populateOptimalPath(optimalPath);
+                }
+                resolve(optimalPath);
+            } else {
+                setMaze(result.value as Cell[][]);
+                requestAnimationFrame(step);
+            }
+        }
+        requestAnimationFrame(step);
+    });
+}
+
+// Helper function to get the neighbors of a cell
 export function getNeighbors(cells: Cell[][], cell: Cell): Cell[] {
     const neighbors: Cell[] = [];
     const { row, col } = cell;

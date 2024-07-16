@@ -118,7 +118,7 @@ export const useMazeStore = create<MazeState>((set) => ({
     },
     moveNode: (row, col, nodeType) => {
         set((state) => {
-            const newMaze = state.maze.map((r, i) =>
+            const newMaze = state.maze.map((r) =>
                 r.map((c) => {
                     if (c.row === row && c.col === col) {
                         return { ...c, [nodeType]: true };

@@ -1,5 +1,4 @@
 import { Cell } from "../utils/PathfindingUtils";
-import { useMazeStore } from '../../hooks/useMazeStore';
 
 function getNeighbors(maze: Cell[][], cell: Cell): Cell[] {
     const neighbors: Cell[] = [];
@@ -30,9 +29,7 @@ function initialiseAllWalls(maze: Cell[][]): Cell[][] {
     );
 }
 
-export async function dfsMazeGeneration(startCell: Cell, endCell: Cell) {
-    const { maze, setMaze } = useMazeStore.getState();
-
+export async function dfsMazeGeneration(maze: Cell[][], startCell: Cell, endCell: Cell, setMaze: (arr: Cell[][]) => void): Promise<void> {
     let newMaze = initialiseAllWalls(maze);
     let stack = [newMaze[1][1]];
     newMaze[1][1].wall = false;

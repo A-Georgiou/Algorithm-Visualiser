@@ -1,9 +1,10 @@
-import { Cell, getNeighbors} from '../utils/PathfindingUtils';
-import { sleep } from '../utils/SleepTime';
+import { Cell, getNeighbors } from '../utils/PathfindingUtils';
+import { useMazeStore } from '../../hooks/useMazeStore';
 
-export async function Dijkstra(cells: Cell[][], startCell: Cell, endCell: Cell, setMaze: (arr: Cell[][]) => void ): Promise<Cell[]> {
+function* dijkstraGenerator(cells: Cell[][], startCell: Cell, endCell: Cell): Generator<Cell[][] | Cell[], unknown> {
     const queue: Cell[] = [];
     startCell.visited = true;
+    startCell.distance = 0;
     queue.push(startCell);
 
     while (queue.length > 0) {
@@ -24,11 +25,32 @@ export async function Dijkstra(cells: Cell[][], startCell: Cell, endCell: Cell, 
                 }
             }
         }
-        await sleep(10);
-        setMaze([...cells]);
+        yield cells;
     }
 
-    return [];
+    yield [];
+}
+
+export async function Dijkstra(startCell: Cell, endCell: Cell):  Promise<Cell[] | null>{
+    const { maze, setMaze, populateOptimalPath } = useMazeStore.getState();
+    const generator = dijkstraGenerator(maze, startCell, endCell);
+
+    return new Promise((resolve) => {
+        function step() {
+            const result = generator.next();
+            if (result.done) {
+                const optimalPath = result.value as Cell[] | null;
+                if (optimalPath) {
+                    populateOptimalPath(optimalPath);
+                }
+                resolve(optimalPath);
+            } else {
+                setMaze(result.value as Cell[][]);
+                requestAnimationFrame(step);
+            }
+        }
+        requestAnimationFrame(step);
+    });
 }
 
 function getPath(endCell: Cell): Cell[] {
