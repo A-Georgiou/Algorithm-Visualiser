@@ -1,4 +1,5 @@
 import { Cell } from "../utils/PathfindingUtils";
+import { useMazeStore } from '../../hooks/useMazeStore';
 
 function getNeighbors(maze: Cell[][], cell: Cell): Cell[] {
     const neighbors: Cell[] = [];
@@ -23,23 +24,22 @@ function getNeighbors(maze: Cell[][], cell: Cell): Cell[] {
     return neighbors;
 }
 
-function initialiseAllWalls(maze: Cell[][]): void {
-    for (let row = 0; row < maze.length; row++) {
-        for (let col = 0; col < maze[row].length; col++) {
-            maze[row][col].wall = true;
-        }
-    }
+function initialiseAllWalls(maze: Cell[][]): Cell[][] {
+    return maze.map(row =>
+        row.map(cell => ({ ...cell, wall: true }))
+    );
 }
 
-export function dfsMazeGeneration(maze: Cell[][], startCell: Cell, endCell: Cell, setMaze: (arr: Cell[][]) => void) {
-    initialiseAllWalls(maze);
+export async function dfsMazeGeneration(startCell: Cell, endCell: Cell) {
+    const { maze, setMaze } = useMazeStore.getState();
 
-    let stack = [maze[1][1]];
-    maze[1][1].wall = false;
+    let newMaze = initialiseAllWalls(maze);
+    let stack = [newMaze[1][1]];
+    newMaze[1][1].wall = false;
 
     while (stack.length > 0) {
         let current = stack[stack.length - 1];
-        let neighbors = getNeighbors(maze, current).filter(n => n.wall);
+        let neighbors = getNeighbors(newMaze, current).filter(n => n.wall);
 
         if (neighbors.length > 0) {
             let next = neighbors[Math.floor(Math.random() * neighbors.length)];
@@ -48,16 +48,16 @@ export function dfsMazeGeneration(maze: Cell[][], startCell: Cell, endCell: Cell
             // Remove the wall between the current cell and the chosen neighbor
             const midRow = current.row + (next.row - current.row) / 2;
             const midCol = current.col + (next.col - current.col) / 2;
-            maze[midRow][midCol].wall = false;
+            newMaze[midRow][midCol].wall = false;
 
             // Mark the chosen neighbor as part of the maze
-            next.wall = false;
+            newMaze[next.row][next.col].wall = false;
         } else {
             stack.pop();
         }
     }
 
-    maze[startCell.row][startCell.col].wall = false;
-    maze[endCell.row][endCell.col].wall = false;
-    setMaze([...maze]);
+    newMaze[startCell.row][startCell.col].wall = false;
+    newMaze[endCell.row][endCell.col].wall = false;
+    setMaze(newMaze);
 }

@@ -120,21 +120,22 @@ export const useMazeStore = create<MazeState>((set) => ({
         set((state) => {
             const newMaze = state.maze.map((r, i) =>
                 r.map((c) => {
-                    if (nodeType === 'start' && c.start) {
-                        return { ...c, start: false };
-                    }
-                    if (nodeType === 'end' && c.end) {
-                        return { ...c, end: false };
-                    }
-                    if (i === row && c.col === col) {
+                    if (c.row === row && c.col === col) {
                         return { ...c, [nodeType]: true };
+                    }else if (nodeType === 'end' && c.end){
+                        return { ...c, end: false};
+                    }else if (nodeType === 'start' && c.start){
+                        return { ...c, start: false};
                     }
                     return c;
                 })
             );
-            return nodeType === 'start'
-                ? { maze: newMaze, startNode: [row, col] }
-                : { maze: newMaze, endNode: [row, col] };
+
+            if (nodeType === 'start') {
+                return { maze: newMaze, startNode: [row, col] };
+            } else {
+                return { maze: newMaze, endNode: [row, col] };
+            }
         });
     },
 }));

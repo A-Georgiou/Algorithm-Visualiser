@@ -51,7 +51,7 @@ const pathfindingAlgorithmHooks = ({
                 primsMazeGeneration(maze, startCell, endCell, setMaze);
             },
             [Algorithm.DFS_MAZE]: () => {
-                dfsMazeGeneration(maze, startCell, endCell, setMaze);
+                dfsMazeGeneration(startCell, endCell);
             },
             [Algorithm.KRUSKAL_MAZE]: () => {
                 kruskalsMazeGeneration(maze, startCell, endCell, setMaze);

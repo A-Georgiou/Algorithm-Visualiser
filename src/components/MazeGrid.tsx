@@ -24,7 +24,7 @@ const MazeGrid: React.FC<MazeGridProps> = ({ handleMouseDown, handleMouseEnter, 
                             style={{
                                 width: '25px',
                                 height: '25px',
-                                backgroundColor: cell.wall ? 'black' : (cell.finalPath ? 'yellow' : (cell.visited ? 'lightblue' : 'white')),
+                                backgroundColor: (cell.wall && !(cell.end || cell.start)) ? 'black' : (cell.finalPath ? 'yellow' : (cell.visited ? 'lightblue' : 'white')),
                                 border: '.5px solid lightblue',
                                 display: 'flex',
                                 alignItems: 'center',
