@@ -1,17 +1,17 @@
 import React from 'react';
-import { Cell } from '../algorithms/utils/PathfindingUtils';
 import { HiChevronDoubleRight, HiOutlineFlag } from "react-icons/hi";
+import { useMazeStore } from '../hooks/useMazeStore';
 import '../styles/pathfinding.css';
 
-
 interface MazeGridProps {
-    maze: Cell[][],
-    handleMouseDown: (rowIndex: number, colIndex: number) => void,
-    handleMouseEnter: (rowIndex: number, colIndex: number) => void,
-    handleMouseUp: () => void
+    handleMouseDown: (rowIndex: number, colIndex: number) => void;
+    handleMouseEnter: (rowIndex: number, colIndex: number) => void;
+    handleMouseUp: () => void;
 }
 
-const MazeGrid: React.FC<MazeGridProps> = ({ maze, handleMouseDown, handleMouseEnter, handleMouseUp }) => {
+const MazeGrid: React.FC<MazeGridProps> = ({ handleMouseDown, handleMouseEnter, handleMouseUp }) => {
+    const { maze } = useMazeStore();
+
     return (
         <div onMouseUp={handleMouseUp}>
             {maze.map((row, rowIndex) => (
@@ -30,8 +30,8 @@ const MazeGrid: React.FC<MazeGridProps> = ({ maze, handleMouseDown, handleMouseE
                                 alignItems: 'center',
                                 justifyContent: 'center'
                             }}>
-                            {cell.start ? <HiChevronDoubleRight style={{ color: 'black', fontSize: '26px' }} /> : ''}
-                            {cell.end ? <HiOutlineFlag style={{ color: 'black', fontSize: '26px' }} /> : ''}
+                            {cell.start && <HiChevronDoubleRight style={{ color: 'black', fontSize: '26px' }} />}
+                            {cell.end && <HiOutlineFlag style={{ color: 'black', fontSize: '26px' }} />}
                         </div>
                     ))}
                 </div>

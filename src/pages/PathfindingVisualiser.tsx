@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import useWindowDimensions from '../utils/useWindowDimensions';
 import '../styles/pathfinding.css';
-import MazeGrid from '../components/MazeGrid.tsx';
-import mazeHooks from '../utils/mazeHooks.ts';
-import pathfindingAlgorithmHooks from '../utils/pathfindingAlgorithmHooks.ts';
-import ControlPanel from '../components/ControlPanel.tsx';
+import MazeGrid from '../components/MazeGrid';
+import { useMazeStore } from '../hooks/useMazeStore';
+import pathfindingAlgorithmHooks from '../utils/pathfindingAlgorithmHooks';
+import ControlPanel from '../components/ControlPanel';
 
 const PathfindingVisualiser: React.FC = () => {
     const { width = 0, height = 0 } = useWindowDimensions();
@@ -12,29 +12,33 @@ const PathfindingVisualiser: React.FC = () => {
     const [drawingValue, setDrawingValue] = useState<boolean>(false);
     const [isMovingNode, setIsMovingNode] = useState<'start' | 'end' | null>(null);
 
-    useEffect(() => {
-        generateTable();
-    }, [width, height]);
-
     const {
         maze,
-        setMaze,
         startNode,
         endNode,
-        setStartNode,
-        setEndNode,
-        generateTable,
+        setMaze, // Make sure setMaze is destructured here
+        generateMaze,
+        setStartPosition,
+        setEndPosition,
+        drawCell,
+        moveNode,
         clearLatestRun,
         populateOptimalPath,
-    } = mazeHooks(width, height);
+    } = useMazeStore();
 
-    const { triggerAlgorithm }  = pathfindingAlgorithmHooks({
+    useEffect(() => {
+        generateMaze(width, height);
+        setStartPosition(Math.floor((height - (26 + 64)) / 26), Math.floor((width - 326) / 26));
+        setEndPosition(Math.floor((height - (26 + 64)) / 26), Math.floor((width - 326) * 3 / 4));
+    }, [width, height, generateMaze, setStartPosition, setEndPosition]);
+
+    const { triggerAlgorithm } = pathfindingAlgorithmHooks({
         clearLatestRun,
         populateOptimalPath,
         maze,
         startNode,
         endNode,
-        setMaze,
+        setMaze, // Ensure setMaze is passed here
     });
 
     const handleMouseDown = (rowIndex: number, colIndex: number) => {
@@ -63,41 +67,10 @@ const PathfindingVisualiser: React.FC = () => {
         }
     };
 
-    const drawCell = (rowIndex: number, colIndex: number, value: boolean) => {
-        if (rowIndex === startNode[0] && colIndex === startNode[1]) return;
-        if (rowIndex === endNode[0] && colIndex === endNode[1]) return;
-        setMaze(prevMaze => {
-            const newMaze = [...prevMaze];
-            newMaze[rowIndex][colIndex].wall = value;
-            return newMaze;
-        });
-    };
-
-    const moveNode = (rowIndex: number, colIndex: number, nodeType: 'start' | 'end') => {
-        setMaze(prevMaze => {
-            const newMaze = [...prevMaze];
-            if (nodeType === 'start') {
-                newMaze[startNode[0]][startNode[1]].start = false;
-                newMaze[rowIndex][colIndex].start = true;
-                setStartNode([rowIndex, colIndex]);
-            } else if (nodeType === 'end') {
-                newMaze[endNode[0]][endNode[1]].end = false;
-                newMaze[rowIndex][colIndex].end = true;
-                setEndNode([rowIndex, colIndex]);
-            }
-            return newMaze;
-        });
-    };
-
     return (
         <div>
-            <ControlPanel triggerAlgorithm={triggerAlgorithm} generateTable={generateTable} clearLatestRun={clearLatestRun}/>
-            <MazeGrid
-                maze={maze}
-                handleMouseDown={handleMouseDown}
-                handleMouseEnter={handleMouseEnter}
-                handleMouseUp={handleMouseUp}
-            />
+            <ControlPanel triggerAlgorithm={triggerAlgorithm} generateTable={() => generateMaze(width, height)} clearLatestRun={clearLatestRun}/>
+            <MazeGrid handleMouseDown={handleMouseDown} handleMouseEnter={handleMouseEnter} handleMouseUp={handleMouseUp} />
         </div>
     );
 };

@@ -42,7 +42,7 @@ export async function BreadthFirstSearch(maze: Cell[][], startCell: Cell, endCel
                 maze[neighbor.row][neighbor.col].prev = currentCell;
             }
         }
-        await sleep(10);
+        await sleep(0);
         setMaze([...maze]);
     }
 
