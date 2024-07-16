@@ -1,8 +1,8 @@
 import { Cell, getNeighbors, getOptimalPath } from "../utils/PathfindingUtils";
-import { sleep } from '../utils/SleepTime';
+import { useMazeStore } from '../../hooks/useMazeStore';
 
-// Define a function to perform breadth-first search on the maze
-export async function BreadthFirstSearch(maze: Cell[][], startCell: Cell, endCell: Cell, setMaze: (arr: Cell[][]) => void ): Promise<Cell[] | null> {
+// Define a generator function for breadth-first search on the maze
+function* bfsGenerator(startCell: Cell, endCell: Cell, maze: Cell[][]): Generator<Cell[][] | Cell[] | null, unknown> {
     const queue: Cell[] = [];
     const visited: boolean[][] = [];
 
@@ -27,7 +27,8 @@ export async function BreadthFirstSearch(maze: Cell[][], startCell: Cell, endCel
         }
         // Check if we have reached the end cell
         if (currentCell.row === endCell.row && currentCell.col === endCell.col) {
-            return getOptimalPath(maze, startCell, endCell);
+            const optimalPath = getOptimalPath(maze, startCell, endCell);
+            return optimalPath;
         }
 
         // Get the neighbors of the current cell
@@ -42,10 +43,32 @@ export async function BreadthFirstSearch(maze: Cell[][], startCell: Cell, endCel
                 maze[neighbor.row][neighbor.col].prev = currentCell;
             }
         }
-        await sleep(0);
-        setMaze([...maze]);
+        yield maze;
     }
 
     // If we reach here, there is no path from start to end
-    return null;
+    yield null;
+}
+
+// Define a function to animate the breadth-first search
+export async function BreadthFirstSearch(startCell: Cell, endCell: Cell): Promise<Cell[] | null> {
+    const { maze, setMaze, populateOptimalPath } = useMazeStore.getState();
+    const generator = bfsGenerator(startCell, endCell, maze);
+
+    return new Promise((resolve) => {
+        function step() {
+            const result = generator.next();
+            if (result.done) {
+                const optimalPath = result.value as Cell[] | null;
+                if (optimalPath) {
+                    populateOptimalPath(optimalPath);
+                }
+                resolve(optimalPath);
+            } else {
+                setMaze(result.value as Cell[][]);
+                requestAnimationFrame(step);
+            }
+        }
+        requestAnimationFrame(step);
+    });
 }

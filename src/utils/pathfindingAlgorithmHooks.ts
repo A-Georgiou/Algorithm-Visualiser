@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Cell } from '../algorithms/utils/PathfindingUtils';
 import { BreadthFirstSearch } from '../algorithms/pathfinding/BreadthFirstSearch.ts';
 import { Dijkstra } from '../algorithms/pathfinding/Dijkstra.ts';
@@ -27,49 +27,58 @@ const pathfindingAlgorithmHooks = ({
     setMaze,
 }: PathfindingAlgorithmHooksProps) => {
     const [algorithm, setAlgorithm] = useState<Algorithm | null>(null);
+    const isRunningRef = useRef(false);
 
     useEffect(() => {
-        if (!algorithm) return;
+        if (!algorithm || isRunningRef.current) return;
 
+        isRunningRef.current = true;
         const startCell = maze[startNode[0]][startNode[1]];
         const endCell = maze[endNode[0]][endNode[1]];
 
-        const algorithmMap: Record<Algorithm, () => Promise<void> | void> = {
-            [Algorithm.BFS]: async () => {
-                const optimalPath = await BreadthFirstSearch(maze, startCell, endCell, setMaze);
-                if (optimalPath) populateOptimalPath(optimalPath);
-            },
-            [Algorithm.DIJKSTRA]: async () => {
-                const optimalPath = await Dijkstra(maze, startCell, endCell, setMaze);
-                if (optimalPath) populateOptimalPath(optimalPath);
-            },
-            [Algorithm.DFS]: async () => {
-                const optimalPath = await DepthFirstSearch(maze, startCell, endCell, setMaze);
-                if (optimalPath) populateOptimalPath(optimalPath);
-            },
-            [Algorithm.PRIMS_MAZE]: () => {
-                primsMazeGeneration(maze, startCell, endCell, setMaze);
-            },
-            [Algorithm.DFS_MAZE]: () => {
-                dfsMazeGeneration(startCell, endCell);
-            },
-            [Algorithm.KRUSKAL_MAZE]: () => {
-                kruskalsMazeGeneration(maze, startCell, endCell, setMaze);
-            },
-            [Algorithm.RECURSIVE_DIVISION_MAZE]: () => {
-                recursiveDivisionMazeGeneration(maze, startCell, endCell, setMaze);
-            },
-            [Algorithm.RECURSIVE_DIVISION_MAZE_HORIZONTAL_BIAS]: () => {
-                recursiveDivisionMazeGeneration(maze, startCell, endCell, setMaze, 0.4);
-            },
-            [Algorithm.RECURSIVE_DIVISION_MAZE_VERTICAL_BIAS]: () => {
-                recursiveDivisionMazeGeneration(maze, startCell, endCell, setMaze, 0.6);
+        const runAlgorithm = async () => {
+            const algorithmMap: Record<Algorithm, () => Promise<void> | void> = {
+                [Algorithm.BFS]: async () => {
+                    const optimalPath = await BreadthFirstSearch(startCell, endCell);
+                    if (optimalPath) populateOptimalPath(optimalPath);
+                },
+                [Algorithm.DIJKSTRA]: async () => {
+                    const optimalPath = await Dijkstra(maze, startCell, endCell, setMaze);
+                    if (optimalPath) populateOptimalPath(optimalPath);
+                },
+                [Algorithm.DFS]: async () => {
+                    const optimalPath = await DepthFirstSearch(maze, startCell, endCell, setMaze);
+                    if (optimalPath) populateOptimalPath(optimalPath);
+                },
+                [Algorithm.PRIMS_MAZE]: () => {
+                    primsMazeGeneration(maze, startCell, endCell, setMaze);
+                },
+                [Algorithm.DFS_MAZE]: () => {
+                    dfsMazeGeneration(startCell, endCell);
+                },
+                [Algorithm.KRUSKAL_MAZE]: () => {
+                    kruskalsMazeGeneration(maze, startCell, endCell, setMaze);
+                },
+                [Algorithm.RECURSIVE_DIVISION_MAZE]: () => {
+                    recursiveDivisionMazeGeneration(maze, startCell, endCell, setMaze);
+                },
+                [Algorithm.RECURSIVE_DIVISION_MAZE_HORIZONTAL_BIAS]: () => {
+                    recursiveDivisionMazeGeneration(maze, startCell, endCell, setMaze, 0.4);
+                },
+                [Algorithm.RECURSIVE_DIVISION_MAZE_VERTICAL_BIAS]: () => {
+                    recursiveDivisionMazeGeneration(maze, startCell, endCell, setMaze, 0.6);
+                }
+            };
+
+            if (algorithm) {
+                await algorithmMap[algorithm]?.();
+                setAlgorithm(null);
+                isRunningRef.current = false;
             }
         };
 
-        algorithmMap[algorithm]?.();
+        runAlgorithm();
 
-        setAlgorithm(null);
     }, [algorithm, maze, startNode, endNode, clearLatestRun, populateOptimalPath, setMaze]);
 
     const triggerAlgorithm = (algorithm: Algorithm) => {

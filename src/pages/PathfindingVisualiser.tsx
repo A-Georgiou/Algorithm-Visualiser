@@ -26,7 +26,7 @@ const PathfindingVisualiser: React.FC = () => {
         populateOptimalPath,
     } = useMazeStore();
 
-    function initialiseMaze(width: number, height: number){
+    function initialiseMaze(width: number, height: number) {
         generateMaze(width, height);
         const cellHeight = Math.floor((height - (26 + 64)) / 26);
         const cellWidth = Math.floor((width - 326) / 26);
@@ -75,7 +75,7 @@ const PathfindingVisualiser: React.FC = () => {
 
     return (
         <div>
-            <ControlPanel triggerAlgorithm={triggerAlgorithm} generateTable={() => {initialiseMaze(width, height)}} clearLatestRun={clearLatestRun}/>
+            <ControlPanel triggerAlgorithm={triggerAlgorithm} generateTable={() => { initialiseMaze(width, height); }} clearLatestRun={clearLatestRun} />
             <MazeGrid handleMouseDown={handleMouseDown} handleMouseEnter={handleMouseEnter} handleMouseUp={handleMouseUp} />
         </div>
     );
