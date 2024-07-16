@@ -91,13 +91,13 @@ const PathfindingVisualiser: React.FC = () => {
 
     return (
         <div>
+            <ControlPanel triggerAlgorithm={triggerAlgorithm} generateTable={generateTable} clearLatestRun={clearLatestRun}/>
             <MazeGrid
                 maze={maze}
                 handleMouseDown={handleMouseDown}
                 handleMouseEnter={handleMouseEnter}
                 handleMouseUp={handleMouseUp}
             />
-            <ControlPanel triggerAlgorithm={triggerAlgorithm} generateTable={generateTable} clearLatestRun={clearLatestRun}/>
         </div>
     );
 };

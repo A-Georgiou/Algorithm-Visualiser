@@ -56,3 +56,11 @@ export function getOptimalPath(maze: Cell[][], startCell: Cell, endCell: Cell): 
 
     return optimalPath;
 }
+
+export function initialiseAllWalls(maze: Cell[][], setWall: boolean = true): void {
+    for (let row = 0; row < maze.length; row++) {
+        for (let col = 0; col < maze[row].length; col++) {
+            maze[row][col].wall = setWall;
+        }
+    }
+}

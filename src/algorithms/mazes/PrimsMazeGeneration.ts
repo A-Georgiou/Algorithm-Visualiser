@@ -1,4 +1,4 @@
-import { Cell } from '../utils/PathfindingUtils';
+import { Cell, initialiseAllWalls } from '../utils/PathfindingUtils';
 
 type Maze = Cell[][];
 
@@ -38,14 +38,6 @@ function getNeighbors(maze: Maze, row: number, col: number): [number, number][] 
         neighbors.push([row, col + 2]);
     }
     return neighbors;
-}
-
-function initialiseAllWalls(maze: Maze): void {
-    for (let row = 0; row < maze.length; row++) {
-        for (let col = 0; col < maze[row].length; col++) {
-            maze[row][col].wall = true;
-        }
-    }
 }
 
 function connectCells(maze: Maze, cell1: { row: number, col: number }, cell2: { row: number, col: number }): void {

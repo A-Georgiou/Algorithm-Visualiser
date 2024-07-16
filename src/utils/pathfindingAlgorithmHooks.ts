@@ -5,6 +5,8 @@ import { Dijkstra } from '../algorithms/pathfinding/Dijkstra.ts';
 import { DepthFirstSearch } from '../algorithms/pathfinding/DepthFirstSearch.ts';
 import { primsMazeGeneration } from '../algorithms/mazes/PrimsMazeGeneration.ts';
 import { dfsMazeGeneration } from '../algorithms/mazes/DFSMazeGeneration.ts';
+import { kruskalsMazeGeneration } from '../algorithms/mazes/KruskalsMazeGeneration.ts';
+import { recursiveDivisionMazeGeneration } from '../algorithms/mazes/RecursiveDivisionMazeGeneration.ts';
 import { Algorithm } from '../utils/AlgorithmEnum.ts';
 
 interface PathfindingAlgorithmHooksProps {
@@ -51,6 +53,18 @@ const pathfindingAlgorithmHooks = ({
             [Algorithm.DFS_MAZE]: () => {
                 dfsMazeGeneration(maze, startCell, endCell, setMaze);
             },
+            [Algorithm.KRUSKAL_MAZE]: () => {
+                kruskalsMazeGeneration(maze, startCell, endCell, setMaze);
+            },
+            [Algorithm.RECURSIVE_DIVISION_MAZE]: () => {
+                recursiveDivisionMazeGeneration(maze, startCell, endCell, setMaze);
+            },
+            [Algorithm.RECURSIVE_DIVISION_MAZE_HORIZONTAL_BIAS]: () => {
+                recursiveDivisionMazeGeneration(maze, startCell, endCell, setMaze, 0.4);
+            },
+            [Algorithm.RECURSIVE_DIVISION_MAZE_VERTICAL_BIAS]: () => {
+                recursiveDivisionMazeGeneration(maze, startCell, endCell, setMaze, 0.6);
+            }
         };
 
         algorithmMap[algorithm]?.();

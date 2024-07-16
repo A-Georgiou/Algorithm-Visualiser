@@ -36,7 +36,7 @@ const mazeHooks = (width: number, height: number) => {
     }
 
     function generateTable() {
-        let flatHeight = Math.floor((height - 26) / 26);
+        let flatHeight = Math.floor((height - (26+64)) / 26);
         if (flatHeight % 2 === 0) flatHeight += 1; 
         let flatWidth = Math.floor((width - 326) / 26);
         if (flatWidth % 2 === 0) flatWidth += 1; 
