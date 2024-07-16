@@ -12,6 +12,8 @@ The project is built using [React](https://reactjs.org/) and [Vite](https://vite
 ### Sorting Algorithms
 1. **Bubble Sort**: Watch as the simplest sorting algorithm compares and swaps elements to sort the array.
 2. **Quick Sort**: See the divide-and-conquer approach in action, partitioning arrays and recursively sorting the partitions.
+3. **Insertion Sort**: This approach inserts each element into an interatively produced sorted array.
+4. **Merge Sort**: A recursive divide-and-conquer algorithm that iteratively merges and sorts larger and larger sub-arrays.
 
 ### Search Algorithms (Coming Soon)
 - **Linear Search**
