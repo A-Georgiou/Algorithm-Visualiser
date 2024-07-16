@@ -1,6 +1,8 @@
-# Algorithm Visualizer
+# Algorithm Visualizer - [Try it out on GitHub Pages!](https://a-georgiou.github.io/Algorithm-Visualiser/)
 
 Welcome to the **Algorithm Visualizer** project! This tool is designed to provide visual representations of various common algorithms in Computer Science, making it easier for students and learners to understand and interact with these fundamental concepts.
+
+Link to hosted site: https://a-georgiou.github.io/Algorithm-Visualiser/
 
 ### Initialised with React + Vite
 The project is built using [React](https://reactjs.org/) and [Vite](https://vitejs.dev/), ensuring a fast and responsive user experience.
