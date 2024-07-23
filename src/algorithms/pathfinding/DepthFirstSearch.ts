@@ -4,21 +4,13 @@ import { useMazeStore } from '../../hooks/useMazeStore';
 // Define a generator function for depth-first search on the maze
 function* dfsGenerator(maze: Cell[][], startCell: Cell, endCell: Cell): Generator<Cell[][] | Cell[] | null, unknown> {
     const stack: Cell[] = [];
-    const visited: boolean[][] = [];
-
-    for (let row = 0; row < maze.length; row++) {
-        visited[row] = [];
-        for (let col = 0; col < maze[row].length; col++) {
-            visited[row][col] = false;
-        }
-    }
 
     stack.push(startCell);
-    visited[startCell.row][startCell.col] = true;
     maze[startCell.row][startCell.col].visited = true;
 
     while (stack.length > 0) {
         const currentCell = stack.pop();
+    
         if (!currentCell) {
             continue;
         }
@@ -32,11 +24,9 @@ function* dfsGenerator(maze: Cell[][], startCell: Cell, endCell: Cell): Generato
         let neighbors = getNeighbors(maze, currentCell);
 
         for (let neighbor of neighbors) {
-            if (!visited[neighbor.row][neighbor.col] && !neighbor.visited) {
+            if (!neighbor.visited) {
                 neighbor.prev = currentCell;
                 stack.push(neighbor);
-                visited[neighbor.row][neighbor.col] = true;
-                maze[neighbor.row][neighbor.col].visited = true;
             }
         }
         yield maze;
@@ -72,19 +62,21 @@ export async function DepthFirstSearch(startCell: Cell, endCell: Cell): Promise<
 export function getNeighbors(cells: Cell[][], cell: Cell): Cell[] {
     const neighbors: Cell[] = [];
     const { row, col } = cell;
-    
+
     if (row > 0 && !cells[row - 1][col].wall) {
         neighbors.push(cells[row - 1][col]);
     }
     if (col > 0 && !cells[row][col - 1].wall) {
         neighbors.push(cells[row][col - 1]);
     }
+
     if (row < cells.length - 1 && !cells[row + 1][col].wall) {
         neighbors.push(cells[row + 1][col]);
     }
+
     if (col < cells[0].length - 1 && !cells[row][col + 1].wall) {
         neighbors.push(cells[row][col + 1]);
     }
-    
+
     return neighbors;
 }
