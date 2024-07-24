@@ -14,10 +14,10 @@ function App() {
     <HashRouter>
       <Routes>
         <Route path="/" element={<Navbar />}>
-          <Route index element={<SortingVisualiser />} />
+          <Route index element={<PathfindingVisualiser />} />
+          <Route path="/pathfinding" element={<PathfindingVisualiser />} />
           <Route path="/sorting" element={<SortingVisualiser />} />
           <Route path="/search" element={<SearchVisualiser />} />
-          <Route path="/pathfinding" element={<PathfindingVisualiser />} />
           <Route path="/graph" element={<GraphVisualiser />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>

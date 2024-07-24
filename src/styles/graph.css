@@ -1,0 +1,11 @@
+.graph-canvas {
+    width: 100%;
+    height: 100svh;
+}
+
+
+.graph-canvas > div {
+    position: relative;
+    width:100%;
+    height: 100%;
+}
