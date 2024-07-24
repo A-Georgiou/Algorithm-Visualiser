@@ -15,6 +15,8 @@ The project is built using [React](https://reactjs.org/) and [Vite](https://vite
 3. **Insertion Sort**: This approach inserts each element into an interatively produced sorted array.
 4. **Merge Sort**: A recursive divide-and-conquer algorithm that iteratively merges and sorts larger and larger sub-arrays.
 
+![](https://github.com/A-Georgiou/Algorithm-Visualiser/blob/main/examples/SortingAlgorithmExample.gif)
+
 ### Search Algorithms
 - **Linear Search**
 - **Binary Search**
@@ -25,14 +27,20 @@ The project is built using [React](https://reactjs.org/) and [Vite](https://vite
 3. **Breadth-First Search (BFS)**: Explore the graph level by level.
 4. **Depth-First Search (DFS)**: Dive deep into the graph to find a path.
 
+![Drawing Example](https://github.com/A-Georgiou/Algorithm-Visualiser/blob/main/examples/DrawnAlgorithmExample.gif)
+
 ### Maze Generation Algorithms
 - **Recursive Division**
 - **Randomized Prim's Algorithm**
 - **Randomized Kruskal's Algorithm**
 
+![Pathfinding Example](https://github.com/A-Georgiou/Algorithm-Visualiser/blob/main/examples/PathfindingExample.gif)
+
 ### Graph Algorithms (Coming Soon)
 - **Minimum Spanning Tree (Prim's and Kruskal's)**
 - **Topological Sort**
+
+![Graph Example](https://github.com/A-Georgiou/Algorithm-Visualiser/blob/main/examples/GraphAlgorithmExample.gif)
 
 ## Getting Started
 
