@@ -41,6 +41,14 @@ const GraphVisualiser: React.FC = () => {
         PopulateGraphMap(nodeMap, setNodes, setEdges);
     }, []);
 
+    function runAlgorithm(nodeId: string) {
+        if(algorithm === GraphAlgorithm.BFS){
+            BreadthFirstSearch(nodeMap, setNodes, nodeId);
+        } else {
+            DepthFirstSearch(nodeMap, setNodes, nodeId);
+        }
+    }
+
 
     return (
         <div className="graph-canvas">
@@ -55,7 +63,7 @@ const GraphVisualiser: React.FC = () => {
             <GraphCanvas
                 nodes={nodes}
                 edges={edges}
-                onNodeDoubleClick={node => DepthFirstSearch(nodeMap, setNodes, node.id)} 
+                onNodeDoubleClick={node => runAlgorithm(node.id)} 
             />
             </div>
         </div>
