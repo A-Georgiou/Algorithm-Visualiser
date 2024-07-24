@@ -3,7 +3,7 @@ export default function GenerateRandomGraph(numNodes: number, setNodes: (nodes: 
     for (let i = 0; i < numNodes; i++) {
         nodeTemp.push({
             id: i.toString(),
-            fill: 'slateblue',
+            fill: 'purple',
         });
     }
     setNodes(nodeTemp);

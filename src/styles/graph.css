@@ -1,11 +1,44 @@
 .graph-canvas {
     width: 100%;
     height: 100svh;
+    display:flex;
+    flex-direction: column;
 }
 
-
-.graph-canvas > div {
+.graph-canvas > .graph-canvas-art {
     position: relative;
     width:100%;
     height: 100%;
+}
+
+.graph-canvas-control-panel{
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    height: 64px;
+    background-color: #6A0DAD;
+    opacity: 80%;
+    transition: .5s;
+}
+
+.graph-canvas-control-panel > h4 {
+    margin: auto;
+}
+
+.graph-canvas-control {
+    z-index: 100;
+    position: relative;
+    top: 0;
+    height: 24px;
+    width: 200px;
+    margin: auto;
+    display: flex;
+    justify-content: center; /** X-axis align **/
+    color: black;
+    background-color: white;
+}
+
+.graph-outer{
+    height: 100svh;
+    width: 100%;
 }
