@@ -4,7 +4,7 @@ import GenerateRandomGraph from '../algorithms/graphs/GenerateRandomGraph';
 import '../styles/graph.css';
 
 const GraphVisualiser: React.FC = () => {
-    const [edges, setEdges] = useState([]);
+    const [edges, _] = useState([]);
     const [nodes, setNodes] = useState<{ id: string }[]>([]); // Specify the type of the nodes state variable
 
     useEffect(() => {
