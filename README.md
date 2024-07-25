@@ -118,7 +118,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Contact
 
 Andrew Georgiou -
+
 Email: AndrewGeorgiou98@outlook.com
+
 LinkedIn: https://www.linkedin.com/in/andrew-georgiou/
 
 Project Link: [https://github.com/a-georgiou/Algorithm-Visualiser](https://github.com/a-georgiou/Algorithm-Visualiser)
